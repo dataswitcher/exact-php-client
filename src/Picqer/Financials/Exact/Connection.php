@@ -546,7 +546,10 @@ class Connection
                 // rerun
                 $this->acquireAccessToken();
             } else {
-                throw new ApiException('Could not acquire or refresh tokens [http ' . $ex->getResponse()->getStatusCode() . '] - Got response: ' . $response->getBody()->getContents(), 0, $ex);
+                // fs
+                $response = $ex->getResponse();
+                $responseBodyAsString = $response->getBody()->getContents();
+                throw new ApiException('Could not acquire or refresh tokens [http ' . $ex->getResponse()->getStatusCode() . '] - Got response: ' . $responseBodyAsString, 0, $ex);
             }
         } finally {
             if (is_callable($this->acquireAccessTokenUnlockCallback)) {
