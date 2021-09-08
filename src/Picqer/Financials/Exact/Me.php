@@ -77,6 +77,7 @@ class Me extends Model
         'ThumbnailPictureFormat',
         'Title',
         'UserName',
+        'CustomerCode',
     ];
 
     protected $url = 'current/Me';
