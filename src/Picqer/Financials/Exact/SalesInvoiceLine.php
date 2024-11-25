@@ -14,6 +14,8 @@ namespace Picqer\Financials\Exact;
  * @property string $CostCenterDescription Description of CostCenter
  * @property string $CostUnit Reference to Cost unit
  * @property string $CostUnitDescription Description of CostUnit
+ * @property string $CustomerItemCode Code the customer uses for this item
+ * @property string $CustomField Custom field endpoint. Provided only for the Exact Online Premium users.
  * @property string $DeliveryDate Delivery date of an item in a sales invoice. This is used for VAT on prepayments, only if sales order is not used in the license.
  * @property string $Description Description. Can be different for header and lines
  * @property float $Discount Discount given on the default price. Discount = (DefaultPrice of Item - PriceItem in line) / DefaultPrice of Item
@@ -46,9 +48,6 @@ namespace Picqer\Financials\Exact;
  * @property string $StartTime StartTime is used to store the first date of a period. StartTime is used in combination with EndTime
  * @property string $Subscription When generating invoices from subscriptions, this field records the link between invoice lines and subscription lines
  * @property string $SubscriptionDescription Description of subscription line
- * @property string $TaxSchedule Obsolete
- * @property string $TaxScheduleCode Obsolete
- * @property string $TaxScheduleDescription Obsolete
  * @property string $UnitCode Code of Unit
  * @property string $UnitDescription Description of Unit
  * @property float $UnitPrice Price per unit
@@ -71,6 +70,8 @@ class SalesInvoiceLine extends Model
         'CostCenterDescription',
         'CostUnit',
         'CostUnitDescription',
+        'CustomerItemCode',
+        'CustomField',
         'DeliveryDate',
         'Description',
         'Discount',
@@ -103,9 +104,6 @@ class SalesInvoiceLine extends Model
         'StartTime',
         'Subscription',
         'SubscriptionDescription',
-        'TaxSchedule',
-        'TaxScheduleCode',
-        'TaxScheduleDescription',
         'UnitCode',
         'UnitDescription',
         'UnitPrice',

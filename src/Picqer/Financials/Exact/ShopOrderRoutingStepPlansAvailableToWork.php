@@ -27,7 +27,6 @@ namespace Picqer\Financials\Exact;
  * @property string $ItemVersion Item version ID
  * @property string $ItemVersionNotes Item version notes
  * @property int $LineNumber Sequence
- * @property int $Mode Mode of priority
  * @property string $Notes Shop order notes
  * @property string $Operation Operation
  * @property string $OperationCode Operation code
@@ -36,7 +35,6 @@ namespace Picqer\Financials\Exact;
  * @property float $PlannedQuantity Planned quantity
  * @property float $PlannedSetupHours Planned setup hours
  * @property int $Priority Priority of the shop order
- * @property int $PriorityDescendingOrder Priority of the shop order
  * @property string $Project Shop order project
  * @property string $ProjectCode Shop order project code
  * @property string $ProjectDescription Project description
@@ -45,6 +43,7 @@ namespace Picqer\Financials\Exact;
  * @property string $RoutingStepRealizationNotes RoutingStepRealizationNotes
  * @property int $RoutingStepStatus Routing step status
  * @property string $RoutingStepStatusDescription Routing step status description
+ * @property int $RoutingStepType Routing step type
  * @property string $RunStartTime Run start time
  * @property int $RunStatus Run timed status
  * @property string $RunTimedTimeTransaction Run timed time transaction
@@ -69,7 +68,6 @@ namespace Picqer\Financials\Exact;
 class ShopOrderRoutingStepPlansAvailableToWork extends Model
 {
     use Query\Findable;
-    use Persistance\Storable;
 
     protected $primaryKey = 'RoutingStep';
 
@@ -94,7 +92,6 @@ class ShopOrderRoutingStepPlansAvailableToWork extends Model
         'ItemVersion',
         'ItemVersionNotes',
         'LineNumber',
-        'Mode',
         'Notes',
         'Operation',
         'OperationCode',
@@ -103,7 +100,6 @@ class ShopOrderRoutingStepPlansAvailableToWork extends Model
         'PlannedQuantity',
         'PlannedSetupHours',
         'Priority',
-        'PriorityDescendingOrder',
         'Project',
         'ProjectCode',
         'ProjectDescription',
@@ -112,6 +108,7 @@ class ShopOrderRoutingStepPlansAvailableToWork extends Model
         'RoutingStepRealizationNotes',
         'RoutingStepStatus',
         'RoutingStepStatusDescription',
+        'RoutingStepType',
         'RunStartTime',
         'RunStatus',
         'RunTimedTimeTransaction',

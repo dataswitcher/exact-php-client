@@ -24,12 +24,12 @@ namespace Picqer\Financials\Exact;
  * @property string $Document Document that is manually linked to the sales order delivery
  * @property string $DocumentSubject Document Subject
  * @property int $EntryNumber Entry number
- * @property GoodsDeliveryLines $GoodsDeliveryLines Collection of lines
+ * @property GoodsDeliveryLine[] $GoodsDeliveryLines Collection of lines
  * @property string $Modified Last modified date
  * @property string $Modifier User ID of modifier
  * @property string $ModifierFullName Name of modifier
  * @property string $Remarks Remarks
- * @property string $ShippingMethod Reference to shipping method
+ * @property string $ShippingMethod Reference to shipping method. Define shipping method during POST, else it will be empty by default.
  * @property string $ShippingMethodCode Code of shipping method
  * @property string $ShippingMethodDescription Description of shipping method
  * @property string $TrackingNumber Reference to header tracking number

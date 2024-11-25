@@ -13,7 +13,7 @@ namespace Picqer\Financials\Exact;
  * @property float $AmountDiscountExclVat Discount amount excluding VAT in the default currency of the company
  * @property float $AmountFC Amount in the currency of the transaction
  * @property float $AmountFCExclVat Amount exclude VAT in the currency of the transaction
- * @property int $ApprovalStatus Shows if this sales order is approved
+ * @property int $ApprovalStatus Approval status of sales order. 0=Awaiting approval, 1=Automatically, 2=Approved. Approve a new sales order by giving value 2 if user has SalesOrderApproval right.
  * @property string $ApprovalStatusDescription Description of ApprovalStatus
  * @property string $Approved Approval datetime
  * @property string $Approver User who approved the sales order
@@ -22,6 +22,7 @@ namespace Picqer\Financials\Exact;
  * @property string $Creator User ID of creator
  * @property string $CreatorFullName Name of creator
  * @property string $Currency Currency code
+ * @property string $CustomField Custom field endpoint. Provided only for the Exact Online Premium users.
  * @property string $DeliverTo Reference to the delivery customer. For an existing sales order this value can not be changed.
  * @property string $DeliverToContactPerson Reference to contact person of delivery customer
  * @property string $DeliverToContactPersonFullName Name of contact person of delivery customer
@@ -36,6 +37,9 @@ namespace Picqer\Financials\Exact;
  * @property string $Document Document that is manually linked to the sales order
  * @property int $DocumentNumber Number of the document
  * @property string $DocumentSubject Subject of the document
+ * @property string $IncotermAddress Address of Incoterm
+ * @property string $IncotermCode Code of Incoterm
+ * @property int $IncotermVersion Version of Incoterm Supported version for Incoterms : 2010, 2020
  * @property int $InvoiceStatus Invoice status
  * @property string $InvoiceStatusDescription Description of InvoiceStatus
  * @property string $InvoiceTo Reference to the customer who will receive the invoice. For an existing sales order this value can not be changed.
@@ -55,19 +59,23 @@ namespace Picqer\Financials\Exact;
  * @property string $PaymentConditionDescription Description of PaymentCondition
  * @property string $PaymentReference Payment reference for sales order
  * @property string $Remarks Extra remarks
- * @property salesorderlines $SalesOrderLines Collection of lines
+ * @property string $SalesChannel ID of Sales channel.
+ * @property string $SalesChannelCode Code of Sales channel
+ * @property string $SalesChannelDescription Description of Sales channel
+ * @property SalesOrderLine[] $SalesOrderLines Collection of lines
+ * @property SalesOrderOrderChargeLine[] $SalesOrderOrderChargeLines Collection of order charge lines
  * @property string $Salesperson Sales representative
  * @property string $SalespersonFullName Name of sales representative
+ * @property string $SelectionCode ID of selection code. Only supported by the Plus, Professional and Premium for Wholesale & Distribution and Manufacturing
+ * @property string $SelectionCodeCode Code of selection code
+ * @property string $SelectionCodeDescription Description of selection code
  * @property string $ShippingMethod ShippingMethod
  * @property string $ShippingMethodDescription Description of ShippingMethod
  * @property int $Status The status of the sales order. 12 = Open, 20 = Partial, 21 = Complete, 45 = Cancelled.
  * @property string $StatusDescription Description of Status
- * @property string $TaxSchedule Obsolete
- * @property string $TaxScheduleCode Obsolete
- * @property string $TaxScheduleDescription Obsolete
  * @property string $WarehouseCode Code of Warehouse
  * @property string $WarehouseDescription Description of Warehouse
- * @property string $WarehouseID Warehouse
+ * @property string $WarehouseID Warehouse. Only supported by the Plus, Professional and Premium editions for Wholesale & Distribution and Manufacturing
  * @property string $YourRef The reference number of the customer
  */
 class SalesOrder extends Model
@@ -95,6 +103,7 @@ class SalesOrder extends Model
         'Creator',
         'CreatorFullName',
         'Currency',
+        'CustomField',
         'DeliverTo',
         'DeliverToContactPerson',
         'DeliverToContactPersonFullName',
@@ -109,6 +118,9 @@ class SalesOrder extends Model
         'Document',
         'DocumentNumber',
         'DocumentSubject',
+        'IncotermAddress',
+        'IncotermCode',
+        'IncotermVersion',
         'InvoiceStatus',
         'InvoiceStatusDescription',
         'InvoiceTo',
@@ -128,21 +140,27 @@ class SalesOrder extends Model
         'PaymentConditionDescription',
         'PaymentReference',
         'Remarks',
+        'SalesChannel',
+        'SalesChannelCode',
+        'SalesChannelDescription',
         'SalesOrderLines',
+        'SalesOrderOrderChargeLines',
         'Salesperson',
         'SalespersonFullName',
+        'SelectionCode',
+        'SelectionCodeCode',
+        'SelectionCodeDescription',
         'ShippingMethod',
         'ShippingMethodDescription',
         'Status',
         'StatusDescription',
-        'TaxSchedule',
-        'TaxScheduleCode',
-        'TaxScheduleDescription',
         'WarehouseCode',
         'WarehouseDescription',
         'WarehouseID',
         'YourRef',
     ];
+
+    protected $url = 'salesorder/SalesOrders';
 
     /**
      * @param array $array
@@ -158,5 +176,21 @@ class SalesOrder extends Model
         $this->attributes['SalesOrderLines'][] = $array;
     }
 
-    protected $url = 'salesorder/SalesOrders';
+    public function getSalesOrderLines()
+    {
+        if (array_key_exists('__deferred', $this->attributes['SalesOrderLines'])) {
+            $this->attributes['SalesOrderLines'] = (new SalesOrderLine($this->connection()))->filter("OrderID eq guid'{$this->OrderID}'");
+        }
+
+        return $this->attributes['SalesOrderLines'];
+    }
+
+    public function getSalesOrderOrderChargeLines()
+    {
+        if (array_key_exists('__deferred', $this->attributes['SalesOrderOrderChargeLines'])) {
+            $this->attributes['SalesOrderOrderChargeLines'] = (new SalesOrderOrderChargeLine($this->connection()))->filter("OrderID eq guid'{$this->OrderID}'");
+        }
+
+        return $this->attributes['SalesOrderOrderChargeLines'];
+    }
 }

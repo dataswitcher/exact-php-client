@@ -11,7 +11,7 @@ namespace Picqer\Financials\Exact;
  * @property string $Account The account that is related to the task
  * @property string $AccountName The name of the account
  * @property string $ActionDate The end date by which the task has to be realized
- * @property requestattachments $Attachments Attachments linked to the task
+ * @property RequestAttachment[] $Attachments Attachments linked to the task
  * @property string $Contact The contact person that is related to the task
  * @property string $ContactFullName The name of the contact person
  * @property string $Created Creation date
@@ -22,6 +22,7 @@ namespace Picqer\Financials\Exact;
  * @property int $Division The division of the task
  * @property string $Document The document that is linked to the task
  * @property string $DocumentSubject The subject of the document
+ * @property string $Employee The employee that is linked to the task.Note:For POST/PUT: This field value is only used when the "Employees" featureset is enabled. For GET: To see the field value required "Employee" featureset. Otherwise, the field always return NULL value.
  * @property int $HID The human readable key
  * @property string $Modified Last modified date
  * @property string $Modifier User ID of the last modifier
@@ -59,6 +60,7 @@ class Task extends Model
         'Division',
         'Document',
         'DocumentSubject',
+        'Employee',
         'HID',
         'Modified',
         'Modifier',

@@ -26,7 +26,8 @@ namespace Picqer\Financials\Exact;
  * @property string $Creator User ID of creator
  * @property string $CreatorFullName Name of creator
  * @property string $Currency Currency
- * @property string $Date Date
+ * @property string $CustomField Custom field endpoint
+ * @property string $Date Entry date
  * @property string $Description Description
  * @property int $Division Division code
  * @property string $Document Reference to document
@@ -36,6 +37,8 @@ namespace Picqer\Financials\Exact;
  * @property string $EntryID The transaction lines that make up a financial entry share the same EntryID
  * @property int $EntryNumber Entry number of the header
  * @property float $ExchangeRate Exchange rate
+ * @property string $ExternalLinkDescription Description of ExternalLink
+ * @property string $ExternalLinkReference External link
  * @property float $ExtraDutyAmountFC Extra duty amount
  * @property float $ExtraDutyPercentage Extra duty percentage
  * @property int $FinancialPeriod Financial period
@@ -63,13 +66,13 @@ namespace Picqer\Financials\Exact;
  * @property string $ProjectCode Code of Project
  * @property string $ProjectDescription Description of Project
  * @property float $Quantity Quantity
- * @property string $SerialNumber Serial number of item
+ * @property string $ShopOrder Reference to shop order
  * @property int $Status 20 = Open, 50 = Processed
  * @property string $Subscription Reference to subscription line
  * @property string $SubscriptionDescription Description of subscription line
  * @property string $TrackingNumber Tracking number of item
  * @property string $TrackingNumberDescription Tracking number description
- * @property int $Type The transaction type.10 = Opening balance142 = Issue to parent20 = Sales entry145 = Shop order time entry21 = Sales credit note146 = Shop order time entry reversal30 = Purchase entry147 = Shop order by-product receipt31 = Purchase credit note148 = Shop order by-product reversal40 = Cash flow150 = Requirement issue50 = VAT return151 = Requirement reversal70 = Asset - Depreciation152 = Returned from parent71 = Asset - Investment155 = Subcontract Issue72 = Asset - Revaluation156 = Subcontract reversal73 = Asset - Transfer158 = Shop order completed74 = Asset - Split162 = Finish assembly75 = Asset - Discontinue170 = Payroll76 = Asset - Sales180 = Stock revaluation80 = Revaluation181 = Financial revaluation82 = Exchange rate difference195 = Stock count83 = Payment difference290 = Correction entry84 = Deferred revenue310 = Period closing85 = Tracking number:Revaluation320 = Year end reflection86 = Deferred cost321 = Year end costing87 = VAT on prepayment322 = Year end profits to gross profit90 = Other323 = Year end costs to gross profit120 = Delivery324 = Year end tax121 = Sales return325 = Year end gross profit to net p/l130 = Receipt326 = Year end net p/l to balance sheet131 = Purchase return327 = Year end closing balance140 = Shop order stock receipt328 = Year start opening balance141 = Shop order stock reversal3000 = Budget
+ * @property int $Type The transaction type.10 = Opening balance141 = Shop order stock reversal20 = Sales entry142 = Issue to parent21 = Sales credit note145 = Shop order time entry30 = Purchase entry146 = Shop order time entry reversal31 = Purchase credit note147 = Shop order by-product receipt40 = Cash flow148 = Shop order by-product reversal50 = VAT return150 = Requirement issue70 = Asset - Depreciation151 = Requirement reversal71 = Asset - Investment152 = Returned from parent72 = Asset - Revaluation155 = Subcontract Issue73 = Asset - Transfer156 = Subcontract reversal74 = Asset - Split158 = Shop order completed75 = Asset - Discontinue162 = Finish assembly76 = Asset - Sales170 = Payroll80 = Revaluation180 = Stock revaluation82 = Exchange rate difference181 = Financial revaluation83 = Payment difference195 = Stock count84 = Deferred revenue290 = Correction entry85 = Tracking number:Revaluation310 = Period closing86 = Deferred cost320 = Year end reflection87 = VAT on prepayment321 = Year end costing90 = Other322 = Year end profits to gross profit95 = Accrued revenue323 = Year end costs to gross profit96 = Accrued costs324 = Year end tax120 = Delivery325 = Year end gross profit to net p/l121 = Sales return326 = Year end net p/l to balance sheet130 = Receipt327 = Year end closing balance131 = Purchase return328 = Year start opening balance140 = Shop order stock receipt3000 = Budget
  * @property string $VATCode Vat code
  * @property string $VATCodeDescription Description of VATCode
  * @property float $VATPercentage Vat percentage
@@ -79,9 +82,6 @@ namespace Picqer\Financials\Exact;
 class TransactionLine extends Model
 {
     use Query\Findable;
-    use Persistance\Storable;
-
-    protected $primaryKey = 'ID';
 
     protected $fillable = [
         'ID',
@@ -103,6 +103,7 @@ class TransactionLine extends Model
         'Creator',
         'CreatorFullName',
         'Currency',
+        'CustomField',
         'Date',
         'Description',
         'Division',
@@ -113,6 +114,8 @@ class TransactionLine extends Model
         'EntryID',
         'EntryNumber',
         'ExchangeRate',
+        'ExternalLinkDescription',
+        'ExternalLinkReference',
         'ExtraDutyAmountFC',
         'ExtraDutyPercentage',
         'FinancialPeriod',
@@ -140,7 +143,7 @@ class TransactionLine extends Model
         'ProjectCode',
         'ProjectDescription',
         'Quantity',
-        'SerialNumber',
+        'ShopOrder',
         'Status',
         'Subscription',
         'SubscriptionDescription',

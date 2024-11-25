@@ -7,17 +7,17 @@ namespace Picqer\Financials\Exact;
  *
  * @see https://start.exactonline.nl/docs/HlpRestAPIResourcesDetails.aspx?name=PurchasePurchaseInvoiceLines
  *
- * @property string $ID A guid that uniqely identifies the invoice line.
- * @property float $Amount In a GET request the line amount is always returned excluding VAT.In a POST request the line amount has to be submitted either including or excluding the VAT amount. This depends on the type (including or excluding) of the VAT code.
+ * @property string $ID A guid that uniquely identifies the purchase invoice line.
+ * @property float $Amount In a GET request the line amount is always returned excluding VAT in foreign currency.In a POST request the line amount has to be submitted either including or excluding the VAT amount. This depends on the type (including or excluding) of the VAT code.
  * @property string $CostCenter The code of the cost center that is linked to this invoice line.
  * @property string $CostUnit The code of the cost unit that is linked to this invoice line.
  * @property string $Currency The currency of the line amount. The total invoice amount and all individual line amounts are in the same currency.
+ * @property string $CustomField Custom field endpoint. Provided only for the Exact Online Premium users.
  * @property string $Description Description of the invoice line.
  * @property float $Discount The discount given on the default price. A value of 0.1 translates to 10% discount.
  * @property string $Expense Expense related to the Work Breakdown Structure of the selected project. Only available with a professional service license
  * @property string $ExpenseDescription Description of expense. Only available with a professional service license
  * @property string $InvoiceID The unique identifier of the purchase invoice this line belongs to.
- * @property int $InvoiceType Purchase invoice type.
  * @property string $Item Guid that identifies the purchase item. In a POST request either the Item or the PurchaseOrderLine has to be supplied.
  * @property string $ItemUnit The default unit of the purchased item.
  * @property int $LineNumber The sequence number of the line.
@@ -46,12 +46,12 @@ class PurchaseInvoiceLine extends Model
         'CostCenter',
         'CostUnit',
         'Currency',
+        'CustomField',
         'Description',
         'Discount',
         'Expense',
         'ExpenseDescription',
         'InvoiceID',
-        'InvoiceType',
         'Item',
         'ItemUnit',
         'LineNumber',

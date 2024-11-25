@@ -7,22 +7,25 @@ namespace Picqer\Financials\Exact;
  *
  * @see https://start.exactonline.nl/docs/HlpRestAPIResourcesDetails.aspx?name=ReadProjectHourEntryRecentHourTypesByProject
  *
- * @property string $ItemId Primary key
- * @property string $DateLastUsed Date last used
+ * @property string $ItemId Guid ID of the item used for hour entries
+ * @property string $DateLastUsed The last date that the item has been used for hour entry
+ * @property bool $IsValid Optional property indicating if the type is still valid for new entries. Can be used to show valid defaults
+ * @property string $ItemCode Code of the item
  * @property string $ItemDescription Description of item
  */
 class HourEntryRecentHourTypesByProject extends Model
 {
     use Query\Findable;
-    use Persistance\Storable;
 
     protected $primaryKey = 'ItemId';
 
     protected $fillable = [
         'ItemId',
         'DateLastUsed',
+        'IsValid',
+        'ItemCode',
         'ItemDescription',
     ];
 
-    protected $url = 'read/project/HourEntryRecentHourTypesByProject?projectId={Edm.Guid}';
+    protected $url = 'read/project/HourEntryRecentHourTypesByProject';
 }
