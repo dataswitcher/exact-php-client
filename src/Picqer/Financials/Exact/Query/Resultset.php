@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Picqer\Financials\Exact\Query;
 
+use Generator;
 use Picqer\Financials\Exact\Connection;
 
 /**
@@ -9,35 +12,18 @@ use Picqer\Financials\Exact\Connection;
  */
 class Resultset
 {
-    /**
-     * @var Connection
-     */
-    protected $connection;
+    protected Connection $connection;
+
+    protected ?string $url;
+
+    protected string $class;
+
+    protected array $params;
 
     /**
-     * @var string
+     * @param array<string, mixed> $params
      */
-    protected $url;
-
-    /**
-     * @var string
-     */
-    protected $class;
-
-    /**
-     * @var array
-     */
-    protected $params;
-
-    /**
-     * Resultset constructor.
-     *
-     * @param Connection $connection
-     * @param string     $url
-     * @param string     $class
-     * @param array      $params
-     */
-    public function __construct(Connection $connection, $url, $class, array $params)
+    public function __construct(Connection $connection, ?string $url, string $class, array $params)
     {
         $this->connection = $connection;
         $this->url = $url;
@@ -45,32 +31,33 @@ class Resultset
         $this->params = $params;
     }
 
-    /**
-     * @return array
-     */
-    public function next()
+    public function next(): array
+    {
+        return iterator_to_array($this->nextAsGenerator());
+    }
+
+    public function nextAsGenerator(): Generator
     {
         $result = $this->connection->get($this->url, $this->params);
         $this->url = $this->connection->nextUrl;
         $this->params = [];
 
-        return $this->collectionFromResult($result);
+        return $this->collectionFromResultAsGenerator($result);
     }
 
-    /**
-     * @return bool
-     */
-    public function hasMore()
+    public function hasMore(): bool
     {
         return $this->url !== null;
     }
 
-    /**
-     * @param array $result
-     *
-     * @return array
-     */
-    protected function collectionFromResult($result)
+    protected function collectionFromResult(array $result): array
+    {
+        return iterator_to_array(
+            $this->collectionFromResultAsGenerator($result)
+        );
+    }
+
+    protected function collectionFromResultAsGenerator(array $result): Generator
     {
         // If we have one result which is not an assoc array, make it the first element of an array for the
         // collectionFromResult function so we always return a collection from filter
@@ -79,12 +66,9 @@ class Resultset
         }
 
         $class = $this->class;
-        $collection = [];
 
         foreach ($result as $r) {
-            $collection[] = new $class($this->connection, $r);
+            yield new $class($this->connection, $r);
         }
-
-        return $collection;
     }
 }

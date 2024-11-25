@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Picqer\Financials\Exact\Query;
 
+use Generator;
 use Picqer\Financials\Exact\Connection;
 
 trait Findable
@@ -11,17 +14,14 @@ trait Findable
      */
     abstract public function connection();
 
-    abstract public function isFillable($key);
+    abstract protected function isFillable($key);
 
     /**
      * @return string
      */
-    abstract public function url();
+    abstract public function url(): string;
 
-    /**
-     * @return string
-     */
-    abstract public function primaryKey();
+    abstract public function primaryKey(): string;
 
     public function find($id)
     {
@@ -55,16 +55,16 @@ trait Findable
     /**
      * Return the value of the primary key.
      *
-     * @param string $code the value to search for
+     * @param string|int $code the value to search for
      * @param string $key  the key being searched (defaults to 'Code')
      *
-     * @return string (guid)
+     * @return string|void (guid)
      */
     public function findId($code, $key = 'Code')
     {
         if ($this->isFillable($key)) {
             $format = ($this->url() == 'crm/Accounts' && $key === 'Code') ? '%18s' : '%s';
-            if (preg_match('/^[\w]{8}-([\w]{4}-){3}[\w]{12}$/', $code)) {
+            if (is_string($code) && preg_match('/^[\w]{8}-([\w]{4}-){3}[\w]{12}$/', $code)) {
                 $format = "guid'$format'";
             } elseif (is_string($code)) {
                 $format = "'$format'";
@@ -83,7 +83,14 @@ trait Findable
         }
     }
 
-    public function filter($filter, $expand = '', $select = '', $system_query_options = null, array $headers = [])
+    public function filter($filter, $expand = '', $select = '', $system_query_options = null, array $headers = []): array
+    {
+        return iterator_to_array(
+            $this->filterAsGenerator($filter, $expand, $select, $system_query_options, $headers)
+        );
+    }
+
+    public function filterAsGenerator($filter, $expand = '', $select = '', $system_query_options = null, array $headers = []): Generator
     {
         $originalDivision = $this->connection()->getDivision();
 
@@ -91,9 +98,11 @@ trait Findable
             $this->connection()->setDivision($divisionId[1]); // Fix division
         }
 
-        $request = [
-            '$filter' => $filter,
-        ];
+        $request = [];
+        if (! empty($filter)) {
+            $request['$filter'] = $filter;
+        }
+
         if (strlen($expand) > 0) {
             $request['$expand'] = $expand;
         }
@@ -112,7 +121,7 @@ trait Findable
             $this->connection()->setDivision($originalDivision); // Restore division
         }
 
-        return $this->collectionFromResult($result);
+        return $this->collectionFromResultAsGenerator($result, $headers);
     }
 
     /**
@@ -120,9 +129,20 @@ trait Findable
      *
      * @return \Picqer\Financials\Exact\Model|null
      */
-    public function first()
+    public function first($filter = '', $expand = '', $select = '', $system_query_options = null, array $headers = [])
     {
-        $results = $this->filter('', '', '', ['$top'=> 1]);
+        $query_options = [
+            '$top'=> 1,
+        ];
+
+        if (is_array($system_query_options)) {
+            // Remove this option, we only want 1 record
+            unset($system_query_options['$top']);
+
+            $query_options = array_merge($query_options, $system_query_options);
+        }
+
+        $results = $this->filter($filter, $expand, $select, $query_options, $headers);
         $result = is_array($results) && count($results) > 0 ? $results[0] : null;
 
         return $result;
@@ -133,14 +153,26 @@ trait Findable
         return new Resultset($this->connection(), $this->url(), get_class($this), $params);
     }
 
-    public function get(array $params = [])
+    public function get(array $params = []): array
+    {
+        return iterator_to_array($this->getAsGenerator($params));
+    }
+
+    public function getAsGenerator(array $params = []): Generator
     {
         $result = $this->connection()->get($this->url(), $params);
 
-        return $this->collectionFromResult($result);
+        return $this->collectionFromResultAsGenerator($result);
     }
 
-    public function collectionFromResult($result)
+    public function collectionFromResult($result, array $headers = []): array
+    {
+        return iterator_to_array(
+            $this->collectionFromResultAsGenerator($result, $headers)
+        );
+    }
+
+    public function collectionFromResultAsGenerator($result, array $headers = []): Generator
     {
         // If we have one result which is not an assoc array, make it the first element of an array for the
         // collectionFromResult function so we always return a collection from filter
@@ -148,21 +180,21 @@ trait Findable
             $result = [$result];
         }
 
+        foreach ($result as $row) {
+            yield new static($this->connection(), $row);
+        }
+
         while ($this->connection()->nextUrl !== null) {
-            $nextResult = $this->connection()->get($this->connection()->nextUrl);
+            $nextResult = $this->connection()->get($this->connection()->nextUrl, [], $headers);
 
             // If we have one result which is not an assoc array, make it the first element of an array for the array_merge function
             if ((bool) count(array_filter(array_keys($nextResult), 'is_string'))) {
                 $nextResult = [$nextResult];
             }
 
-            $result = array_merge($result, $nextResult);
+            foreach ($nextResult as $row) {
+                yield new static($this->connection(), $row);
+            }
         }
-        $collection = [];
-        foreach ($result as $r) {
-            $collection[] = new static($this->connection(), $r);
-        }
-
-        return $collection;
     }
 }

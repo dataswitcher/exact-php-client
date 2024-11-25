@@ -22,6 +22,7 @@ namespace Picqer\Financials\Exact;
  * @property string $Created Creation date
  * @property string $Creator User ID of creator
  * @property string $CreatorFullName Name of creator
+ * @property string $CustomField Custom field endpoint. Provided only for the Exact Online Premium users.
  * @property int $Division Division code
  * @property string $Fax Fax number
  * @property bool $FreeBoolField_01 Free boolean field 1
@@ -44,7 +45,7 @@ namespace Picqer\Financials\Exact;
  * @property string $FreeTextField_03 Free text field 3
  * @property string $FreeTextField_04 Free text field 4
  * @property string $FreeTextField_05 Free text field 5
- * @property string $Mailbox Mailbox
+ * @property string $Mailbox MailboxTake notes: The 'Mailbox' functionality required the Mailbox feature set in the licence.
  * @property bool $Main Indicates if the address is the main address for this type
  * @property string $Modified Last modified date
  * @property string $Modifier User ID of modifier
@@ -64,7 +65,6 @@ namespace Picqer\Financials\Exact;
 class DefaultAddressForAccount extends Model
 {
     use Query\Findable;
-    use Persistance\Storable;
 
     protected $fillable = [
         'ID',
@@ -82,6 +82,7 @@ class DefaultAddressForAccount extends Model
         'Created',
         'Creator',
         'CreatorFullName',
+        'CustomField',
         'Division',
         'Fax',
         'FreeBoolField_01',
@@ -122,5 +123,5 @@ class DefaultAddressForAccount extends Model
         'WarehouseDescription',
     ];
 
-    protected $url = 'read/crm/DefaultAddressForAccount?accountId={Edm.Guid}&addressType={Edm.Int32}';
+    protected $url = 'read/crm/DefaultAddressForAccount';
 }

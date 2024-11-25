@@ -7,12 +7,12 @@ namespace Picqer\Financials\Exact;
  *
  * @see https://start.exactonline.nl/docs/HlpRestAPIResourcesDetails.aspx?name=InventoryWarehouses
  *
- * @property string $ID Primary key
+ * @property string $ID A guid that is the unique identifier of the warehouse
  * @property string $Code Code of the warehouse
  * @property string $Created Creation date
  * @property string $Creator User ID of creator
  * @property string $CreatorFullName Name of creator
- * @property string $DefaultStorageLocation The default storage location of this warehouse. Warehouses can have a default storage location in packages Manufacturing Premium or Wholesale Premium
+ * @property string $DefaultStorageLocation The default storage location of this warehouse. Warehouses can have a default storage location in packages Manufacturing Professional & Premium or Wholesale Professional & Premium
  * @property string $DefaultStorageLocationCode Default storage location's code
  * @property string $DefaultStorageLocationDescription Default storage location's description
  * @property string $Description The description of the warehouse

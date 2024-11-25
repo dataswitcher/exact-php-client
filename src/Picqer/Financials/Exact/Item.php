@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Picqer\Financials\Exact;
 
 /**
@@ -7,7 +9,8 @@ namespace Picqer\Financials\Exact;
  *
  * @see https://start.exactonline.nl/docs/HlpRestAPIResourcesDetails.aspx?name=LogisticsItems
  *
- * @property string $ID Primary key
+ * @property string $ID A guid that is the unique identifier of the item
+ * @property float $AverageCost The current average cost price
  * @property string $Barcode Barcode of the item (numeric string)
  * @property string $Class_01 Item class code referring to ItemClasses with ClassID 1
  * @property string $Class_02 Item class code referring to ItemClasses with ClassID 2
@@ -27,6 +30,7 @@ namespace Picqer\Financials\Exact;
  * @property string $Created Creation date
  * @property string $Creator User ID of creator
  * @property string $CreatorFullName Name of creator
+ * @property string $CustomField Custom field endpoint. Provided only for the Exact Online Premium users.
  * @property string $Description Description of the item
  * @property int $Division Division code
  * @property string $EndDate Together with StartDate this determines if the item is active
@@ -70,22 +74,19 @@ namespace Picqer\Financials\Exact;
  * @property string $GLStockDescription Description of GLStock
  * @property float $GrossWeight Gross weight for international goods shipments
  * @property int $IsBatchItem Indicates if batches are used for this item
- * @property int $IsBatchNumberItem This property is obsolete. Use property 'IsBatchItem' instead.
  * @property bool $IsFractionAllowedItem Indicates if fractions (for example 0.35) are allowed for quantities of this item
  * @property int $IsMakeItem Indicates that an Item is produced to Inventory, not purchased
  * @property int $IsNewContract Only used for packages (IsPackageItem=1). To indicate if this package is a new contract type package
  * @property int $IsOnDemandItem Is On demand Item
  * @property bool $IsPackageItem Indicates if the item is a package item. Can only be created in the hosting administration
  * @property bool $IsPurchaseItem Indicates if the item can be purchased
- * @property int $IsRegistrationCodeItem Indicated if the item is used in voucher functionality
  * @property bool $IsSalesItem Indicates if the item can be sold
  * @property bool $IsSerialItem Indicates that serial numbers are used for this item
- * @property bool $IsSerialNumberItem This property is obsolete. Use property 'IsSerialItem' instead.
- * @property bool $IsStockItem If you have the Trade or Manufacturing license and you check this property the item will be shown in the stock positions overview, stock counts and transaction lists. If you have the Invoice module and you check this property you will get a general journal entry based on the Stock and Costs G/L accounts of the item group. If you don’t want the general journal entry to be created you should change the Stock/Costs G/L account on the Item group page to the type Costs instead of Inventory.
+ * @property bool $IsStockItem If you have the Trade or Manufacturing license and you check this property the item will be shown in the stock positions overview, stock counts and transaction lists. If you have the Invoice module and you check this property you will get a general journal entry based on the Stock and Costs G/L accounts of the item group. If you don’t want the general journal entry to be created you should change the Stock/Costs G/L account on the Item group page to the type Costs instead of Inventory. If you have the CRM Standalone license, the item will not be available.
  * @property bool $IsSubcontractedItem Indicates if the item is provided by an outside supplier
  * @property int $IsTaxableItem Indicates if tax needs to be calculated for this item
  * @property int $IsTime Indicates if the item is a time unit item (for example a labor hour item)
- * @property int $IsWebshopItem Indicates if the item can be exported to a web shop
+ * @property int $IsWebshopItem Indicates if the item can be exported to a web shop. If you have the CRM Standalone license, the item will not be available.
  * @property string $ItemGroup GUID of Item group of the item
  * @property string $ItemGroupCode Code of ItemGroup
  * @property string $ItemGroupDescription Description of ItemGroup
@@ -95,6 +96,7 @@ namespace Picqer\Financials\Exact;
  * @property float $NetWeight Net weight for international goods shipments
  * @property string $NetWeightUnit Net Weight unit for international goods shipment, only available in manufacturing packages
  * @property string $Notes Notes
+ * @property string $Picture This field is write-only. The picture can be downloaded through PictureUrl and PictureThumbnailUrl.
  * @property string $PictureName File name of picture
  * @property string $PictureThumbnailUrl Url where thumbnail picture can be retrieved
  * @property string $PictureUrl Url where picture can be retrieved
@@ -102,7 +104,12 @@ namespace Picqer\Financials\Exact;
  * @property string $SalesVatCodeDescription Description of SalesVatCode
  * @property string $SearchCode Search code of the item
  * @property int $SecurityLevel Security level (0 - 100)
+ * @property float $StandardSalesPrice Standard sales price
  * @property string $StartDate Together with EndDate this determines if the item is active
+ * @property string $StatisticalCode Statistical code
+ * @property float $StatisticalNetWeight Statistical net weight
+ * @property float $StatisticalUnits Statistical units
+ * @property float $StatisticalValue Statistical value
  * @property float $Stock Quantity that is in stock
  * @property string $Unit The standard unit of this item
  * @property string $UnitDescription Description of Unit
@@ -116,6 +123,7 @@ class Item extends Model
 
     protected $fillable = [
         'ID',
+        'AverageCost',
         'Barcode',
         'Class_01',
         'Class_02',
@@ -135,6 +143,7 @@ class Item extends Model
         'Created',
         'Creator',
         'CreatorFullName',
+        'CustomField',
         'Description',
         'Division',
         'EndDate',
@@ -178,17 +187,14 @@ class Item extends Model
         'GLStockDescription',
         'GrossWeight',
         'IsBatchItem',
-        'IsBatchNumberItem',
         'IsFractionAllowedItem',
         'IsMakeItem',
         'IsNewContract',
         'IsOnDemandItem',
         'IsPackageItem',
         'IsPurchaseItem',
-        'IsRegistrationCodeItem',
         'IsSalesItem',
         'IsSerialItem',
-        'IsSerialNumberItem',
         'IsStockItem',
         'IsSubcontractedItem',
         'IsTaxableItem',
@@ -203,6 +209,7 @@ class Item extends Model
         'NetWeight',
         'NetWeightUnit',
         'Notes',
+        'Picture',
         'PictureName',
         'PictureThumbnailUrl',
         'PictureUrl',
@@ -210,7 +217,12 @@ class Item extends Model
         'SalesVatCodeDescription',
         'SearchCode',
         'SecurityLevel',
+        'StandardSalesPrice',
         'StartDate',
+        'StatisticalCode',
+        'StatisticalNetWeight',
+        'StatisticalUnits',
+        'StatisticalValue',
         'Stock',
         'Unit',
         'UnitDescription',
@@ -219,10 +231,7 @@ class Item extends Model
 
     protected $url = 'logistics/Items';
 
-    /**
-     * @return string
-     */
-    public function getDownloadUrl()
+    public function getDownloadUrl(): string
     {
         return $this->PictureUrl;
     }

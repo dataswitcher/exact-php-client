@@ -35,7 +35,7 @@ namespace Picqer\Financials\Exact;
  * @property int $DirectDebitMandateType Type of the mandate. 0 = Core 1 = Business-to-business.
  * @property string $DiscountDueDate Date before which the payment by the customer must be done to be eligible for discount.
  * @property int $Division Division code.
- * @property string $Document Document that is created when processing collections.  The bank export file is attached to the document.
+ * @property string $Document Document that is created when processing collections. The bank export file is attached to the document.
  * @property int $DocumentNumber Number of the document.
  * @property string $DocumentSubject Subject of the document.
  * @property string $DueDate Date before which the payment by the customer must be done.
@@ -59,6 +59,7 @@ namespace Picqer\Financials\Exact;
  * @property string $Modified Last modified date.
  * @property string $Modifier User ID of modifier.
  * @property string $ModifierFullName Name of modifier.
+ * @property int $OrderNumber Order number of the linked transaction.
  * @property string $PaymentCondition Payment condition of the linked transaction.
  * @property string $PaymentConditionDescription Description of the payment condition.
  * @property int $PaymentDays Number of days between invoice date and due date.
@@ -78,7 +79,7 @@ namespace Picqer\Financials\Exact;
  * @property float $TransactionAmountFC Total amount of the linked transaction in the selected currency.
  * @property string $TransactionDueDate Due date of the linked transaction.
  * @property string $TransactionEntryID Linked transaction. Use this as reference to SalesEntries.
- * @property string $TransactionID Linked transaction line. Use this as reference to BankEntryLines and CashEntryLines.
+ * @property string $TransactionID Linked transaction line. Use this as reference to SalesEntryLines.
  * @property bool $TransactionIsReversal Indicates if the linked transaction is a reversal entry.
  * @property int $TransactionReportingPeriod Period of the linked transaction.
  * @property int $TransactionReportingYear Year of the linked transaction.
@@ -89,9 +90,6 @@ namespace Picqer\Financials\Exact;
 class Receivable extends Model
 {
     use Query\Findable;
-    use Persistance\Storable;
-
-    protected $primaryKey = 'ID';
 
     protected $fillable = [
         'ID',
@@ -146,6 +144,7 @@ class Receivable extends Model
         'Modified',
         'Modifier',
         'ModifierFullName',
+        'OrderNumber',
         'PaymentCondition',
         'PaymentConditionDescription',
         'PaymentDays',

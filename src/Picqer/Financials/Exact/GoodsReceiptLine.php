@@ -8,12 +8,14 @@ namespace Picqer\Financials\Exact;
  * @see https://start.exactonline.nl/docs/HlpRestAPIResourcesDetails.aspx?name=PurchaseOrderGoodsReceiptLines
  *
  * @property string $ID The unique identifier of a stock transaction for a goods receipt line. A goods receipt line can be split into multiple storage locations. In this case, multiple storage locations will have the same stock transaction ID.
- * @property StockBatchNumbers $BatchNumbers Collection of batch numbers
+ * @property StockBatchNumber[] $BatchNumbers Collection of batch numbers
  * @property string $Created Creation date
  * @property string $Creator User ID of the creator
  * @property string $CreatorFullName Name of the creator
  * @property string $Description Goods receipt line description
  * @property int $Division Division code
+ * @property string $Expense Expense related to the Work Breakdown Structure of the selected project. Only available with a professional service license
+ * @property string $ExpenseDescription Description of expense. Only available with a professional service license
  * @property string $GoodsReceiptID All the lines of a goods receipt have the same GoodsReceiptID
  * @property string $Item ID of the received item
  * @property string $ItemCode Code of the received item
@@ -35,7 +37,8 @@ namespace Picqer\Financials\Exact;
  * @property int $PurchaseOrderNumber Order number of the purchase order that is received
  * @property float $QuantityOrdered Quantity ordered
  * @property float $QuantityReceived Quantity received
- * @property StockSerialNumbers $SerialNumbers Collection of serial numbers
+ * @property bool $Rebill Indicates whether the purchase order line needs to be rebilled. Only available with a professional service license
+ * @property StockSerialNumber[] $SerialNumbers Collection of serial numbers
  * @property string $SupplierItemCode Supplier item code
  */
 class GoodsReceiptLine extends Model
@@ -51,6 +54,8 @@ class GoodsReceiptLine extends Model
         'CreatorFullName',
         'Description',
         'Division',
+        'Expense',
+        'ExpenseDescription',
         'GoodsReceiptID',
         'Item',
         'ItemCode',
@@ -72,6 +77,7 @@ class GoodsReceiptLine extends Model
         'PurchaseOrderNumber',
         'QuantityOrdered',
         'QuantityReceived',
+        'Rebill',
         'SerialNumbers',
         'SupplierItemCode',
     ];

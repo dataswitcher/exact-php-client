@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Picqer\Financials\Exact;
 
 /**
  * Class DocumentAttachment.
  *
- * @see https://start.exactonline.nl/docs/HlpRestAPIResourcesDetails.aspx?name=documentsDocumentAttachments
+ * @see https://start.exactonline.nl/docs/HlpRestAPIResourcesDetails.aspx?name=DocumentsDocumentAttachments
  *
  * @property string $ID Primary key
- * @property string $Attachment Contains the attachment
+ * @property string $Attachment Contains the attachment(Format: Base64 encoded)
  * @property string $Document Reference to the Document
  * @property string $FileName Filename of the attachment
  * @property float $FileSize File size of the attachment
@@ -31,10 +33,7 @@ class DocumentAttachment extends Model
 
     protected $url = 'documents/DocumentAttachments';
 
-    /**
-     * @return string
-     */
-    public function getDownloadUrl()
+    public function getDownloadUrl(): string
     {
         return $this->Url . '&Download=1';
     }

@@ -16,6 +16,7 @@ namespace Picqer\Financials\Exact;
  * @property string $AssetGroupDescription Description of the asset group
  * @property float $CatalogueValue The catalogue value of the asset
  * @property string $Code Code of the asset
+ * @property CommercialBuildingValue[] $CommercialBuildingValues Commercial building value. You can have several commercial building value, with start and end dates
  * @property string $Costcenter Assets can be linked to a cost center
  * @property string $CostcenterDescription Description of Costcenter
  * @property string $Costunit Assets can be linked to a cost unit
@@ -23,6 +24,7 @@ namespace Picqer\Financials\Exact;
  * @property string $Created Creation date
  * @property string $Creator User ID of creator
  * @property string $CreatorFullName Name of creator
+ * @property string $CustomField Custom field endpoint
  * @property float $DeductionPercentage Used for Belgium legislation. Used to produce the official 'Investment deduction' report
  * @property float $DepreciatedAmount Amount that is already depreciated when adding an existing asset. Can only be filled when 'Alreadydepreciated' is on
  * @property int $DepreciatedPeriods Number of periods that already have been depreciated for the asset. Can only be filled when 'Alreadydepreciated' is on
@@ -50,21 +52,21 @@ namespace Picqer\Financials\Exact;
  * @property string $Parent Parent asset
  * @property string $ParentCode Code of Parent
  * @property string $ParentDescription Description of Parent
- * @property binary $Picture Image for an asset
+ * @property string $Picture Image for an asset
  * @property string $PictureFileName Filename of the image
  * @property string $PrimaryMethod First method of depreciation. Currently, it is the only one used
  * @property string $PrimaryMethodCode Code of PrimaryMethod
  * @property string $PrimaryMethodDescription Description of PrimaryMethod
  * @property float $ResidualValue Indicates the residual value of the asset at the end of the depreciation
  * @property string $StartDate Asset Depreciation StartDate
- * @property int $Status Identifies the status of the Asset. (see AssetStatus table to see the possibilities)
+ * @property int $Status Identifies the status of the Asset. (1 = Active, 2 = Not validated, 3 = Inactive, 4 = Depreciated, 5 = Blocked, 6 = Sold)
  * @property string $TransactionEntryID Reference to the transaction lines that make up the financial entry.
  * @property int $TransactionEntryNo Entry number of transaction
+ * @property string $Type Indicate if an asset is commercial building or other asset. (0 = Other Assets, 1 = Commercial Building)
  */
 class Asset extends Model
 {
     use Query\Findable;
-    use Persistance\Storable;
 
     protected $fillable = [
         'ID',
@@ -76,6 +78,7 @@ class Asset extends Model
         'AssetGroupDescription',
         'CatalogueValue',
         'Code',
+        'CommercialBuildingValues',
         'Costcenter',
         'CostcenterDescription',
         'Costunit',
@@ -83,6 +86,7 @@ class Asset extends Model
         'Created',
         'Creator',
         'CreatorFullName',
+        'CustomField',
         'DeductionPercentage',
         'DepreciatedAmount',
         'DepreciatedPeriods',
@@ -120,6 +124,7 @@ class Asset extends Model
         'Status',
         'TransactionEntryID',
         'TransactionEntryNo',
+        'Type',
     ];
 
     protected $url = 'assets/Assets';
